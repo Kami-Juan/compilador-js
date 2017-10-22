@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+</head>
+<body>
+    <div id="app" class="container">
+        <header>
+            <img src="img/logo-tec.png" alt="">
+            <h1>ANALIZADOR SEMANTICO</h1>
+            <p id="date">Dra. María Italia Jiménez Ochoa <br> ${ date } ${ time }</p>
+        </header>
+        <form>
+            <div class="opciones">
+                <div class="_op-file">
+                    <label for="file" id="_folder"><i class="fa fa-folder-open" aria-hidden="true"></i></label>
+                    <input type="file" name="entrada" id="file" style="display: none">
+                    <label for="sub" id="run_file"><i class="fa fa-play-circle" aria-hidden="true"></i></label>
+                    <input type="submit" id="sub" style="display: none" @click.prevent="onSubmit">
+                </div>
+                <div class="_op-textarea">
+                    <label for="ex" id="run_file"><i class="fa fa-play-circle" aria-hidden="true"></i></label>
+                    <input type="submit" id="ex" style="display: none" @click.prevent="onSubmitAnalisis">
+                </div>
+            </div>
+            <div class="panel_codigo">
+                <div class="codigo_carga" >
+                    <div v-for="(res, i) in fileEntry">
+                        <div class="line"><span>${ i+1 }</span></div>
+                         <p >${ res }</p>
+                    </div> 
+                   
+                </div>
+                <div class="codigo_write">
+                    <textarea id="textarea1" name="analisis"></textarea>
+                </div>
+            </div>
+        </form>
+        <div class="salida">
+            <div class="mensajes"></div>
+            <div class="good" v-if="!isError">
+                <p v-for="result in resultLexico">${ result.identificador } : ${ result.token }</p>                
+            </div>
+            <div class="mad"  v-if="isError">
+                <p v-for="result in resultLexico">${ result.error }</p>
+            </div>
+        </div>
+        <footer></footer>
+    </div>    
+</body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://unpkg.com/vue"></script>   
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="js/vue-view.js"></script>
+</html>

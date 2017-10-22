@@ -1,0 +1,157 @@
+@import url('../fonts/roboto/Roboto-Regular.woff');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: content-box;
+}
+
+body{
+    font-family: 'Roboto', sans-serif;
+    text-rendering: optimizeLegibility;
+    font-size: 16px;
+ }
+
+.container{
+    margin: auto;
+}
+
+header{
+    width: 100%;
+    height: 100px;
+    box-sizing: border-box;
+}
+
+header > img{
+    height: 100%;
+    float: left;
+    box-sizing: border-box;
+}
+
+header > h1{
+    box-sizing: border-box;
+    text-transform: uppercase;
+    margin: auto;
+    text-align: center;
+    padding-top: 20px;
+    float: left;
+    margin-left: 390px;
+}
+
+header > p{
+    float: right;
+    margin-top: 50px;
+    font-weight: bold;
+    box-sizing: border-box;
+}
+
+#date{
+    
+}
+/* MENU DE OPCIONES */
+
+.opciones{
+    clear: both;
+    height: 50px;
+    background-color: whitesmoke;
+    box-sizing: border-box;
+}
+
+#_folder{
+    font-size: 35px;
+    color: #f57c00 ;
+}
+
+#run_file{
+    font-size: 35px;
+    color: #81c784;    
+}
+
+.opciones > ._op-file{
+    float: left;
+    width: 50%;
+    box-sizing: border-box;
+}
+
+.opciones > ._op-textarea{
+    float: right;
+    width: 50%;
+    box-sizing: border-box;
+}
+
+/* PANELS DE CODIGO */
+
+.panel_codigo{
+    height: 500px;
+    background-color: rgb(228, 221, 221);
+    box-sizing: border-box;
+    width: 100%;
+    clear: both;
+}
+
+.codigo_carga{
+    float: left;
+    width: 50%;
+    height: 100%;
+    box-sizing: border-box;  
+    overflow-y: scroll;
+}
+
+.codigo_carga p{
+    font-family: 'Inconsolata', monospace;
+    font-family: 18px;
+}
+
+.line {
+    background-color: whitesmoke;
+    float: left;
+    font-weight: bold;
+    font-family: 'Inconsolata', monospace;
+}
+
+
+.codigo_write{
+    float: right;
+    width: 50%;
+    height: 100%;
+    box-sizing: border-box;    
+}
+
+.codigo_write > textarea{
+    width: 99.5%;
+    height: 99.5%;
+    box-sizing: content-box;
+    overflow-y: scroll;
+    resize: none;
+}
+
+/* SALIDA DEL CODIGO */
+
+.salida{
+    height: 300px;
+    box-sizing: border-box;
+}
+
+.salida > .mensajes{
+    height: 15%;
+    background-color: #90caf9 ;
+}
+
+.salida > .good{
+    background-color: #b2dfdb;
+    height: 85%;
+    overflow-y: scroll;
+}
+
+.salida > .mad{
+    background-color: #e57373;
+    height: 85%;
+    overflow-y: scroll;
+}
+
+/* PIE DE PAGINA */
+
+footer{
+    height: 100px;
+    background-color: #616161;
+}
