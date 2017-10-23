@@ -1,6 +1,6 @@
 const _ = require('underscore');
 
-const componentesLexicos = /(int|float|[-]|[\+]|[\/]|[\*]|^[a-z]+$|[$][A-Za-z$]+|[_][A-Za-z_]+|[A-Za-z_]+|[A-Za-z$]+|[_]|[$]|[\[]|[\]]|[\(]|[\)]|[\;]|[ ]|[=]|[0-9]+|[\,])/g;
+const componentesLexicos = /(int|float|[-]|[\+]|[\/]|[\*]|^[a-z]+$|[$][A-Za-z$]+|[_][A-Za-z_]+|[A-Za-z_]+|[A-Za-z$]+|[_]|[$]|[\[]|[\]]|[\(]|[\)]|[\;]|[ ]|[=]|[0-9]+|[\,]|[\t]+|[\r])/g;
 
 const operadores = /([-]|[\+]|[\/]|[\*])/g;
 const llaves = /([\[]|[\]]|[\(]|[\)])/g;
@@ -31,10 +31,11 @@ let findErrores = ( linea, index_datos ) => {
 };
 
 let llenarTablaLexico = ( match ) => {
-    var match = _.filter(match, function(z){
-        return z !== null && z !== " ";
+    var match0 = _.filter(match, function(z){
+        return z !== null && z !== " "  && z !== "\r" && z !== _.isEmpty(z);
     });
 
+    var match = _.without(match0, "\t");
     match.forEach(function(e){
 
                 switch (true) {
