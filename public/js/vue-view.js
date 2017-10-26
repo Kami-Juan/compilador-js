@@ -5,7 +5,8 @@ new Vue({
         time: moment().format('LTS'),
         date: moment().format('l'),
         resultLexico: '',
-        fileEntry: ''
+        fileEntry: '',
+        datos: ''
     },
     delimiters: ['${', '}'],
     methods: {
@@ -21,22 +22,22 @@ new Vue({
                 axios.post('http://localhost:3000/upload', data).then( res => {
                 console.log(res.data);
                 this.fileEntry =  res.data.datos;
-                // this.fileEntry = this.fileEntry.filter(function(val){
-                //     return val !== "";
-                // });
+                this.datos = this.fileEntry.toString().replace(/\,/g,"");
+
                 if(res.data.resultado.erroresLexicos.length > 0){
                     this.isError = true;
                     this.resultLexico = res.data.resultado.erroresLexicos;
+                
                 }else{
                     this.isError = false;
-                    this.resultLexico = res.data.resultado.tablaLexico;                    
+                    this.resultLexico = res.data.resultado.tablaLexico;                               
                 }
             });
         },
         onSubmitAnalisis(){
             let texto = document.getElementById('textarea1').value;    
             axios.post('http://localhost:3000/analizar', { texto: texto }).then( res => {
-                console.log(res.resultado.tablaLexico);   
+                console.log(res.data.resultado);   
             });
 
         }    

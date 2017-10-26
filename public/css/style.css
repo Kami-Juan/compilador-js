@@ -83,7 +83,7 @@ header > p{
 
 .panel_codigo{
     height: 500px;
-    background-color: rgb(228, 221, 221);
+    
     box-sizing: border-box;
     width: 100%;
     clear: both;
@@ -121,9 +121,7 @@ header > p{
 
 .codigo_write > textarea{
     width: 99.5%;
-    height: 99.5%;
     box-sizing: content-box;
-    overflow-y: scroll;
     resize: none;
 }
 

@@ -36,13 +36,14 @@ app.post('/upload', function (req, res) {
             return console.log(err);
         }
             var datos = data.split("\n");
-            /* console.log(datos);
-            console.log("-----"); */
             var resultado = analizarTokens(datos);
-            //console.log(resultado);
             res.send({ resultado, datos });
             cleanTablas();
+
+            fs.unlinkSync('./'+ req.file.path);
         });
+
+       
     });
 });
 

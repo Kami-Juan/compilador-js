@@ -1,10 +1,10 @@
 const _ = require('underscore');
 
-const componentesLexicos = /(int|float|[-]|[\+]|[\/]|[\*]|^[a-z]+$|[$][A-Za-z$]+|[_][A-Za-z_]+|[A-Za-z_]+|[A-Za-z$]+|[_]|[$]|[\[]|[\]]|[\(]|[\)]|[\;]|[ ]|[=]|[\,]|[\t]+|[\r]|[\d]+[\.]\d+|[0-9]+|[\.])/g;
+const componentesLexicos = /(int|float|[-]|[\+]|[\/]|[\*]|^[a-z]+$|[$][A-Za-z$_]+|[_][A-Za-z_]+|[A-Za-z_]+|[A-Za-z$]+|[_]|[$]|[\[]|[\]]|[\(]|[\)]|[\;]|[ ]|[=]|[\,]|[\t]+|[\r]|[\d]+[\.]\d+|[0-9]+|[\.])/g;
 
 const operadores = /([-]|[\+]|[\/]|[\*])/g;
 const llaves = /([\[]|[\]]|[\(]|[\)])/g;
-const identificadores = /(^[a-z]+$|[$][A-Za-z$]+|[_][A-Za-z_]+|[A-Za-z_]+|[A-Za-z$]+[_]|[$])/g;
+const identificadores = /(^[a-z]+$|[$][A-Za-z$_]+|[_][A-Za-z_]+|[A-Za-z_]+|[A-Za-z$]+[_]|[$])/g;
 const numeros = /([\d]+[\.]\d+|[0-9]+)/g;
 const palabrasReservadas = /(int|float)/g;
 const puntoycoma = /([\;])/g;
@@ -62,7 +62,7 @@ let llenarTablaLexico = ( match ) => {
                         tablaLexico.push({ identificador: "coma", token:e });
                         break;    
                     case e == e.match(punto):
-                        tablaLexico.push({ punto: "punto", token: e });
+                        tablaLexico.push({ identificador: "punto", token: e });
                         break;    
                 }
     });

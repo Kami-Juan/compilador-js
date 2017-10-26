@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="js/jquery-linedtextarea.css">    
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">       
 </head>
 <body>
     <div id="app" class="container">
@@ -37,14 +38,18 @@
                    
                 </div>
                 <div class="codigo_write">
-                    <textarea id="textarea1" name="analisis"></textarea>
+                    <textarea id="textarea1" name="analisis" v-model="datos" rows="20"></textarea>
                 </div>
             </div>
         </form>
         <div class="salida">
             <div class="mensajes"></div>
             <div class="good" v-if="!isError">
-                <p v-for="result in resultLexico">${ result.identificador } : ${ result.token }</p>                
+                <div class="col-md-4">
+                    <p v-for="result in resultLexico">${ result.identificador } : ${ result.token }</p>           
+                </div>
+                <div class="col-md-4"></div>
+                <div class="col-md-4"></div>
             </div>
             <div class="mad"  v-if="isError">
                 <p v-for="result in resultLexico">${ result.error }</p>
@@ -57,4 +62,11 @@
     <script src="js/vue.js"></script>   
     <script src="js/axios.min.js"></script>
     <script src="js/vue-view.js"></script>
+    <script src="js/jquery-3.2.1.min.js"></script>
+    
+    <script src="js/jquery-linedtextarea.js"></script> 
+    <script>
+            $("#textarea1").linedtextarea();
+    </script> 
+
 </html>
