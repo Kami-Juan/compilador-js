@@ -1,19 +1,27 @@
 const _ = require('underscore');
 
-const componentesLexicos = /(int|float|[-]|[\+]|[\/]|[\*]|^[a-z]+$|[$][A-Za-z$_]+|[_][A-Za-z_]+|[A-Za-z_]+|[A-Za-z$]+|[_]|[$]|[\[]|[\]]|[\(]|[\)]|[\;]|[ ]|[=]|[\,]|[\t]+|[\r]|[\d]+[\.]\d+|[0-9]+|[\.])/g;
+const componentesLexicos = /(int|float|[-]|[\+]|[\/]|[\*]|^[a-z]+$|[$][A-Za-z$_]+|[_][A-Za-z_]+|[A-Za-z_]+|[A-Za-z$]+|[_]|[$]|[\(]|[\)]|[\;]|[ ]|[=]|[\t]+|[\r]|[\d]+[\.]\d+|[0-9]+|[\.])/g;
 
-const operadores = /([-]|[\+]|[\/]|[\*])/g;
-const llaves = /([\[]|[\]]|[\(]|[\)])/g;
+/* const operadores = /([-]|[\+]|[\/]|[\*])/g; */
+
+/* OPERADORES */
+const sum = /([\+])/g;
+const res = /([-])/g;
+const mul = /([\/])/g;
+const div = /([\*])/g;
+
+const llave_aper = /([\(])/g;
+const llave_cerr = /([\)])/g;
 const identificadores = /(^[a-z]+$|[$][A-Za-z$_]+|[_][A-Za-z_]+|[A-Za-z_]+|[A-Za-z$]+[_]|[$])/g;
 const numeros = /([\d]+[\.]\d+|[0-9]+)/g;
 const palabrasReservadas = /(int|float)/g;
 const puntoycoma = /([\;])/g;
 const igualacion = /([=])/g;
-const coma = /([\,])/g;
 const punto = /[\.]/g
 
 
 let tablaLexico = [];
+let array_identificadores = [];
 let erroresLexicos = [];
 
 let findErrores = ( linea, index_datos ) => {
@@ -37,32 +45,57 @@ let llenarTablaLexico = ( match ) => {
     var match = _.without(match0, "\t");
     match.forEach(function(e){
                 switch (true) {
-                    case e == e.match(operadores):
-                        tablaLexico.push({ identificador: "operador", token:e });
+                    /* case e == e.match(operadores):
+                        tablaLexico.push({ identificador: "OPERADOR", token:e });
+                        array_identificadores.push("OPERADOR");
+                        break; */
+                    case e == e.match(sum):
+                        tablaLexico.push({ identificador: "OPERADOR", token:e });
+                        array_identificadores.push("SUMA");
                         break;
-                    case e == e.match(llaves):
-                        tablaLexico.push({ identificador: "cierre", token:e });
+                    case e == e.match(res):
+                        tablaLexico.push({ identificador: "OPERADOR", token:e });
+                        array_identificadores.push("RESTA");
                         break;
+                    case e == e.match(mul):
+                        tablaLexico.push({ identificador: "OPERADOR", token:e });
+                        array_identificadores.push("MULTIPLICACION");
+                        break;
+                    case e == e.match(div):
+                        tablaLexico.push({ identificador: "OPERADOR", token:e });
+                        array_identificadores.push("DIVISION");
+                        break;               
+                    case e == e.match(llave_cerr):
+                        tablaLexico.push({ identificador: "PARENTESIS_CERRAR", token:e });
+                        array_identificadores.push("PARENTESIS_CERRAR");                        
+                    break;    
+                    case e == e.match(llave_aper):
+                        tablaLexico.push({ identificador: "PARENTESIS_APERTURA", token:e });
+                        array_identificadores.push("PARENTESIS_APERTURA");                        
+                        break;    
                     case e == e.match(palabrasReservadas):
-                        tablaLexico.push({ identificador: "palabra reservada", token:e });
+                        tablaLexico.push({ identificador: "PALABRA_RESERVADA", token:e });
+                        array_identificadores.push("PALABRA_RESERVADA");                                                
                         break;    
                     case e == e.match(identificadores):
-                        tablaLexico.push({ identificador: "identificador", token:e });
+                        tablaLexico.push({ identificador: "IDENTIFICADOR", token:e });
+                        array_identificadores.push("IDENTIFICADOR");  
                         break;
                     case e == e.match(numeros):
-                        tablaLexico.push({ identificador: "constante", token:e });
+                        tablaLexico.push({ identificador: "CONSTANTE", token:e });
+                        array_identificadores.push("CONSTANTE");
                         break;
                     case e == e.match(puntoycoma):
-                        tablaLexico.push({ identificador: "punto y coma", token:e });
+                        tablaLexico.push({ identificador: "PUNTOYCOMA", token:e });
+                        array_identificadores.push("PUNTOYCOMA");                        
                         break;
                     case e == e.match(igualacion):
-                        tablaLexico.push({ identificador: "igualación", token:e });
-                        break;    
-                    case e == e.match(coma):
-                        tablaLexico.push({ identificador: "coma", token:e });
-                        break;    
+                        tablaLexico.push({ identificador: "IGUALACION", token:e });
+                        array_identificadores.push("IGUALACION");                                                
+                        break;       
                     case e == e.match(punto):
-                        tablaLexico.push({ identificador: "punto", token: e });
+                        tablaLexico.push({ identificador: "PUNTO", token: e });
+                        array_identificadores.push("PUNTO");                                                                        
                         break;    
                 }
     });
@@ -81,7 +114,8 @@ let analizarTokens = ( entrada ) => {
 
     return {
         erroresLexicos,
-        tablaLexico
+        tablaLexico,
+        array_identificadores
     };
 
 };
@@ -89,6 +123,7 @@ let analizarTokens = ( entrada ) => {
 let cleanTablas = () => {
     tablaLexico = [];
     erroresLexicos = [];
+    array_identificadores = [];
 };
 
 module.exports = { analizarTokens, cleanTablas };
