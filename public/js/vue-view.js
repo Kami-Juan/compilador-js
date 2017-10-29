@@ -38,6 +38,7 @@ new Vue({
             let texto = document.getElementById('textarea1').value;    
             axios.post('http://localhost:3000/analizar', { texto: texto }).then( res => {
                 console.log(res.data.resultado);   
+                console.log(res.data.sintac);   
             });
 
         }    

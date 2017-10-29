@@ -1,3 +1,4 @@
+const _ = require("underscore");
 /*
      VN/VT| =  |-   |+   |*   |/   |id  |cte  |(   |)   |int  |float |$
      -----|---------------------------------------------------------------
@@ -19,6 +20,9 @@
 
 */
 
+let errores_sintacticos = [];
+let exito_sintacticos = [];
+
 const tabla_sintactica =
     [      /*  =    |-      |+      |*      |/     |id    |cte    |(     |)  |wr    |$ */
       /*Z*/["",     "",     "",     "",     "",    "S",   "",     "",    "", "RE",   ""  ],
@@ -37,18 +41,27 @@ const tabla_sintactica =
       /*R*/["",     "",     "",     "",     "",    "",    "",     "",    "",  "wr",  ""  ],
     ];
 
-    let analizadorSintactico = ( lex, errores ) => 
+    let analizadorSintactico = ( lex, errores,fila ) => 
     {
         var cont = 0;
+        var pila = ["PUNTOYCOMA","Z"];        
         if( errores.length > 0 )
         {
-            console.log("hay errores en el léxico, por favor repárelos primero.");            
+            errores_sintacticos.push({
+                mensaje_error: `hay errores en el léxico, por favor repárelos primero: ${(fila+1)}`, 
+                fila_error: `${(fila+1)}`,
+                token_error: null
+            });           
         }else
-        {
-            if( ( lex[0] == "PALABRA_RESERVADA" || lex[0] == "IDENTIFICADOR" ) && lex[lex.length-1] == "PUNTOYCOMA" )
+        {   
+            if( lex.length == 0)
+            {
+               pila.pop();
+               pila.pop();
+            }
+            else if( ( lex[0] == "PALABRA_RESERVADA" || lex[0] == "IDENTIFICADOR" ) && lex[lex.length-1] == "PUNTOYCOMA")
             {
                 /* console.log(lex); */
-                var pila = ["PUNTOYCOMA","Z"];
                 while( pila.length !== 0 && lex.length !== 0)
                 {
                     if( lex[0] == "PALABRA_RESERVADA" )
@@ -697,11 +710,11 @@ const tabla_sintactica =
                         {
                             pila.pop();
                             lex.shift();
-                            if( lex.length > 0 )
+                            /* if( lex.length > 0 )
                             {
                                 pila.push("PUNTOYCOMA");
                                 pila.push("Z");
-                            }
+                            } */
                         }else{
                             if( pila[pila.length-1] == "a" )
                             {
@@ -726,8 +739,7 @@ const tabla_sintactica =
                         }
                     }
                     else if( lex[0] == "PUNTO" )
-                    {
-                        console.log("La sintaxis es incorrecta");                        
+                    {                      
                         break;
                     }
 
@@ -740,12 +752,22 @@ const tabla_sintactica =
                 }
                 /* console.log(pila);
                 console.log(lex); */
+                //console.log(fila);
                 if( pila.length == 0 && lex.length == 0 )
                 { 
-                    console.log("Exito!!!");
+                    //console.log(`Exito en la fila ${(fila+1)}`);
+                    exito_sintacticos.push({
+                        mensaje: `Exito en la fila ${(fila+1)}`,
+                        fila_exito: `${(fila+1)}`
+                    });
                 }else if( pila.length > 0 )
                 {
-                    console.log("La sintaxis es incorrecta");
+                    errores_sintacticos.push({
+                        mensaje_error: `La sintaxis es incorrecta: ${(fila+1)} en ${ lex[0]}`, 
+                        fila_error: `${(fila+1)}`,
+                        token_error: `${ lex[0]}`
+                    });
+                    //console.log(`La sintaxis es incorrecta: fila ${(fila+1)}, token ${ lex[0]}`);
                 }else if(cont > 100)
                 {		
                     resultado.push("Es inválida la frase. Prueba con otra :D");
@@ -753,9 +775,42 @@ const tabla_sintactica =
 
             }else
             {
-                console.log("Debe iniciar con palabra reservada o identificador");
+                //console.log(`Debe iniciar con palabra reservada o identificador: fila ${(fila+1)}, token ${lex[0]}`);
+                errores_sintacticos.push({
+                    mensaje_error: `Debe iniciar con palabra reservada o identificador: fila ${(fila+1)}, token ${lex[0]}`, 
+                    fila_error: `${(fila+1)}`,
+                    token_error: `${ lex[0]}`
+                });
             }
+            
         }
-    };  
+        if( errores_sintacticos.length > 1 )
+        {
+            errores_sintacticos = errores_sintacticos.filter((x)=>
+            {
+                return x.fila_error !== "NaN";
+            });
+            //errores_sintacticos = [];
+            //console.log(ex);
+        }
+        if( exito_sintacticos.length > 1 )
+        {
+            exito_sintacticos = exito_sintacticos.filter((z) =>
+            {
+                return z.fila_exito !== "NaN"
+            });
+            //console.log(fx)
+        }
 
-    module.exports = {analizadorSintactico};
+        return {
+            errores_sintacticos,
+            exito_sintacticos
+        }
+    };
+    
+    let cleanTablaSintac = () => {
+        errores_sintacticos = [];
+        exito_sintacticos = [];
+    }
+
+    module.exports = { analizadorSintactico, cleanTablaSintac };

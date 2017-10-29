@@ -1,4 +1,5 @@
 const _ = require('underscore');
+const { analizadorSintactico } = require('./analizador-sintactico');
 
 const componentesLexicos = /(int|float|[-]|[\+]|[\/]|[\*]|^[a-z]+$|[$][A-Za-z$_]+|[_][A-Za-z_]+|[A-Za-z_]+|[A-Za-z$]+|[_]|[$]|[\(]|[\)]|[\;]|[ ]|[=]|[\t]+|[\r]|[\d]+[\.]\d+|[0-9]+|[\.])/g;
 
@@ -7,8 +8,8 @@ const componentesLexicos = /(int|float|[-]|[\+]|[\/]|[\*]|^[a-z]+$|[$][A-Za-z$_]
 /* OPERADORES */
 const sum = /([\+])/g;
 const res = /([-])/g;
-const mul = /([\/])/g;
-const div = /([\*])/g;
+const div = /([\/])/g;
+const mul = /([\*])/g;
 
 const llave_aper = /([\(])/g;
 const llave_cerr = /([\)])/g;
@@ -23,6 +24,8 @@ const punto = /[\.]/g
 let tablaLexico = [];
 let array_identificadores = [];
 let erroresLexicos = [];
+let match_replace = [];
+
 
 let findErrores = ( linea, index_datos ) => {
 
@@ -43,7 +46,8 @@ let llenarTablaLexico = ( match ) => {
     });
 
     var match = _.without(match0, "\t");
-    match.forEach(function(e){
+   
+    let replace_array_match = match.map(function(e){
                 switch (true) {
                     /* case e == e.match(operadores):
                         tablaLexico.push({ identificador: "OPERADOR", token:e });
@@ -52,70 +56,85 @@ let llenarTablaLexico = ( match ) => {
                     case e == e.match(sum):
                         tablaLexico.push({ identificador: "OPERADOR", token:e });
                         array_identificadores.push("SUMA");
+                        return e = "SUMA";
                         break;
                     case e == e.match(res):
                         tablaLexico.push({ identificador: "OPERADOR", token:e });
                         array_identificadores.push("RESTA");
+                        return e = "RESTA";
                         break;
                     case e == e.match(mul):
                         tablaLexico.push({ identificador: "OPERADOR", token:e });
                         array_identificadores.push("MULTIPLICACION");
+                        return e = "MULTIPLICACION";
                         break;
                     case e == e.match(div):
                         tablaLexico.push({ identificador: "OPERADOR", token:e });
                         array_identificadores.push("DIVISION");
+                        return e = "DIVISION";
                         break;               
                     case e == e.match(llave_cerr):
                         tablaLexico.push({ identificador: "PARENTESIS_CERRAR", token:e });
-                        array_identificadores.push("PARENTESIS_CERRAR");                        
+                        array_identificadores.push("PARENTESIS_CERRAR");
+                        return e = "PARENTESIS_CERRAR";                        
                     break;    
                     case e == e.match(llave_aper):
                         tablaLexico.push({ identificador: "PARENTESIS_APERTURA", token:e });
-                        array_identificadores.push("PARENTESIS_APERTURA");                        
+                        array_identificadores.push("PARENTESIS_APERTURA");
+                        return e = "PARENTESIS_APERTURA";                        
                         break;    
                     case e == e.match(palabrasReservadas):
                         tablaLexico.push({ identificador: "PALABRA_RESERVADA", token:e });
-                        array_identificadores.push("PALABRA_RESERVADA");                                                
+                        array_identificadores.push("PALABRA_RESERVADA");
+                        return e = "PALABRA_RESERVADA";                                                
                         break;    
                     case e == e.match(identificadores):
                         tablaLexico.push({ identificador: "IDENTIFICADOR", token:e });
-                        array_identificadores.push("IDENTIFICADOR");  
+                        array_identificadores.push("IDENTIFICADOR");
+                        return e = "IDENTIFICADOR";
                         break;
                     case e == e.match(numeros):
                         tablaLexico.push({ identificador: "CONSTANTE", token:e });
                         array_identificadores.push("CONSTANTE");
+                        return e = "CONSTANTE";                        
                         break;
                     case e == e.match(puntoycoma):
                         tablaLexico.push({ identificador: "PUNTOYCOMA", token:e });
-                        array_identificadores.push("PUNTOYCOMA");                        
+                        array_identificadores.push("PUNTOYCOMA");
+                        return e = "PUNTOYCOMA";                        
                         break;
                     case e == e.match(igualacion):
                         tablaLexico.push({ identificador: "IGUALACION", token:e });
-                        array_identificadores.push("IGUALACION");                                                
+                        array_identificadores.push("IGUALACION");
+                        return e = "IGUALACION";
                         break;       
                     case e == e.match(punto):
                         tablaLexico.push({ identificador: "PUNTO", token: e });
-                        array_identificadores.push("PUNTO");                                                                        
+                        array_identificadores.push("PUNTO");                                                          return e = "PUNTO";              
                         break;    
                 }
     });
-
+    //console.log(replace_array_match);
+    match_replace =  replace_array_match;
+    /* console.log(replace_array_match); */
 };
 
 let analizarTokens = ( entrada ) => {
 
-    var componentes;
-    
     entrada.forEach(function(e, i) 
     {
         findErrores(e,i);
         llenarTablaLexico(e.match(componentesLexicos));
+        //console.log(match_replace.length);
+        //console.log(match_replace);
+        //console.log(i);
+        analizadorSintactico(match_replace, erroresLexicos, i);
     }); 
-
     return {
         erroresLexicos,
         tablaLexico,
-        array_identificadores
+        array_identificadores,
+        match_replace
     };
 
 };

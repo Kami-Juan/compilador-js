@@ -4,7 +4,7 @@ var hbs = require('hbs');
 var multer = require('multer');
 var bodyParse = require('body-parser');
 const { analizarTokens,cleanTablas } = require('./compilador/analizador-lexico');
-const { analizadorSintactico } = require('./compilador/analizador-sintactico');
+const { analizadorSintactico, cleanTablaSintac } = require('./compilador/analizador-sintactico');
 
 var app = express();
 var port = 3000;
@@ -51,9 +51,11 @@ app.post('/upload', function (req, res) {
 app.post('/analizar', ( req, res ) => {
     let datosAnalisis = req.body.texto.split("\n");
     var resultado = analizarTokens(datosAnalisis);
-    res.send({ resultado });
+/*     res.send({ resultado }); */
     cleanTablas();
-    analizadorSintactico(resultado.array_identificadores, resultado.erroresLexicos);
+    var sintac = analizadorSintactico(resultado.array_identificadores, resultado.erroresLexicos);
+    res.send({ resultado, sintac });
+    cleanTablaSintac();
 });
 
 app.get('/', ( req, res ) => {
