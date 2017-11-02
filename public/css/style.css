@@ -251,6 +251,29 @@ td {
 /* PIE DE PAGINA */
 
 footer {
-    height: 100px;
+    height: 210px;
+    padding-top: 10px;
     background-color: #616161;
+    color: white;
+    text-align: center;
+    border-top: 8px black solid;
+}
+
+footer img{
+    width: 100px;
+    border-radius: 50%;
+    border: 3px white solid;
+    border-style: dashed;
+}
+
+footer>.izq {
+    float: left;
+    width: 50%;
+    text-align: center;
+}
+
+footer>.der {
+    float: right;
+    width: 50%;
+    text-align: center;
 }
