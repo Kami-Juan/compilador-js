@@ -22,7 +22,7 @@ new Vue({
                 return;
             }
 
-                axios.post('http://localhost:3000/upload', data).then( res => {
+            axios.post('https://secret-ridge-93895.herokuapp.com/upload', data).then( res => {
                 console.log(res.data);
                 this.fileEntry =  res.data.datos;
                 this.datos = this.fileEntry.toString().replace(/\,/g,"");
@@ -42,7 +42,7 @@ new Vue({
         },
         onSubmitAnalisis(){
             let texto = document.getElementById('textarea1').value;    
-            axios.post('http://localhost:3000/analizar', { texto: texto }).then( res => {
+            axios.post('https://secret-ridge-93895.herokuapp.com/analizar', { texto: texto }).then( res => {
                 console.log(res.data.resultado);   
                 console.log(res.data.sintac);
                 console.log(res.data.res_sem);
