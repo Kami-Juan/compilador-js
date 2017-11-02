@@ -8,7 +8,7 @@ const { analizadorSintactico, cleanTablaSintac } = require('./compilador/analiza
 const { analizadorSemantico, cleanTablaSemantico } = require('./compilador/analizador-semantico');
 
 var app = express();
-var port = 3000;
+var port = process.env.PORT || 3000;
 
 app.use(express.static( __dirname + '/public' ));
 hbs.registerPartials(__dirname + '/views/partials');
