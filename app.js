@@ -39,8 +39,16 @@ app.post('/upload', function (req, res) {
         }
             var datos = data.split("\n");
             var resultado = analizarTokens(datos);
-            res.send({ resultado, datos });
             cleanTablas();
+
+            let identificador = resultado.array_identificadores;
+
+            var sintac = analizadorSintactico(resultado.array_identificadores, resultado.erroresLexicos);
+            cleanTablaSintac();
+
+            var res_sem = analizadorSemantico(resultado.tablaLexico, sintac.errores_sintacticos);
+            res.send({ resultado, sintac, res_sem, datos });
+            cleanTablaSemantico();
 
             fs.unlinkSync('./'+ req.file.path);
         });

@@ -5,13 +5,14 @@ let exito_semantico = [];
 
 let analizadorSemantico = ( array_lex, err_sintac  ) =>
 {
-    if( err_sintac.length > 0 )
+    if (err_sintac.length > 0 || (array_lex[0].identificador == "IDENTIFICADOR" && array_lex[1].identificador == "PUNTOYCOMA") || array_lex[0].identificador !== "PALABRA_RESERVADA")
     {
         console.log("Repare la sintaxis por favor");
         console.log(err_sintac);
         
     }else
     {
+
         for( var x = 0; x < array_lex.length; x++ )
         {
             if( array_lex[x].identificador == "CONSTANTE" ){
@@ -23,7 +24,7 @@ let analizadorSemantico = ( array_lex, err_sintac  ) =>
                 }
             }
         }
-
+        
         for (var x = 0; x < array_lex.length; x++)
         {
             if (array_lex[x].identificador == "PALABRA_RESERVADA") 
@@ -57,7 +58,7 @@ let analizadorSemantico = ( array_lex, err_sintac  ) =>
                 }    
             }   
         }
-
+        
         for (var x = 0; x < array_lex.length; x++) 
         {
             if (array_lex[x].identificador == "IDENTIFICADOR") {
@@ -80,8 +81,11 @@ let analizadorSemantico = ( array_lex, err_sintac  ) =>
             }
         }
         
+               
+
         for (var x = 0; x < array_lex.length; x++) 
         {
+            
             if (array_lex[x].identificador == "IDENTIFICADOR" && array_lex[x + 1].identificador == "IGUALACION" && array_lex[x + 2].identificador == "CONSTANTE" && array_lex[x + 3].identificador == "PUNTOYCOMA" && array_lex[x - 1].identificador != "PALABRA_RESERVADA")
             {
                 if (array_lex[x].tipo !== array_lex[x + 2].tipo ){
@@ -105,7 +109,7 @@ let analizadorSemantico = ( array_lex, err_sintac  ) =>
                     if( contErr == 0 )
                     {
                         exito_semantico.push({
-                            codigo_exito: "OP_TYPE>SUCCESSFULL",
+                            codigo_exito: "OP_TYPE->SUCCESSFULL",
                             msg: "LAS VARIABLES TIENEN EL MISMO TIPO QUE EL OPERANDO",
                             filla_exito: array_lex[x].fila,
                             lexema: array_lex[x].token,
@@ -116,6 +120,10 @@ let analizadorSemantico = ( array_lex, err_sintac  ) =>
             }
         }
     }
+
+    array_lex = array_lex.filter((e) => {
+        return e.identificador != "OPERADOR" && e.identificador != "PUNTOYCOMA" && e.identificador != "IGUALACION"; 
+    });
 
     return {
         errores_semanticos,
@@ -154,7 +162,6 @@ let realizarOperacion = ( simbolo, fila, lex ) =>
             //console.log(lex[s].token);
         } else if ((lex[s].identificador == "IDENTIFICADOR" || lex[s].identificador == "CONSTANTE" ) && lex[s].fila == fila && lex[s].tipo !== simbolo.tipo )
         {
-            //console.log("Error: " + lex[s].token);
             errores_semanticos.push({
                 codigo_err: "OP_TYPE->ERROR",
                 msg: "EL TIPO DE DATO ES INCOMPATIBLE CON LA OPERACION",

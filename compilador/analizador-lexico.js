@@ -90,7 +90,7 @@ let llenarTablaLexico = ( match,index ) => {
                         return e = "PARENTESIS_APERTURA";                        
                         break;      
                     case e == e.match(palabrasReservadas):
-                        tablaLexico.push({ identificador: "PALABRA_RESERVADA", token:e, fila: index+1 });
+                        tablaLexico.push({ identificador: "PALABRA_RESERVADA", token:e, fila: index+1, tipo: e});
                         array_identificadores.push("PALABRA_RESERVADA");
                         return e = "PALABRA_RESERVADA";                                                
                         break;    

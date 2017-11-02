@@ -56,20 +56,84 @@
             </div>
             <div class="good" v-if="!isError">
                 <div class="col-md-4">
-                    <p v-for="result in resultLexico">${ result.identificador } : ${ result.token }</p>           
+                    <p v-for="(result,i) in resultLexico"><b>${(i+1)} - ${ result.identificador } : </b> ${ result.token }</p><br>           
                 </div>
-                <div class="col-md-4"></div>
-                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                    <p v-for="(result,i) in resultSintac"><b>${(i+1)} - ${ result.mensaje } :</b> ${ result.fila_exito }</p><br>
+                </div>
+                <div class="col-md-4">
+                    <p v-for="(result,i) in resultSemantico"><b>${(i+1)} - ${ result.codigo_exito }</b> : ${ result.msg } - lexema: ${ result.lexema }, linea ${ result.filla_exito }</p><br>
+                </div>
             </div>
             <div class="mad"  v-if="isError">
                 <div class="col-md-4">
-                    <p v-for="result in resultLexico"><b>Error en fila: </b>${ result.num_linea }<b>Token desconocido: </b>${ result.error }</p>
+                    <p v-for="(result,i) in resultLexico"><b>${(i+1)} - Error en fila: </b>${ result.num_linea },<b>Token desconocido: </b> ${ result.error }</p>
                 </div>
                 <div class="col-md-4">
-                   
+                    <p v-for="(result,i) in resultSintac"><b>${(i+1)} - ${ result.mensaje_error } :</b> ${ result.fila_error }, lexema : ${ result.token_error }</p> <br>
                 </div>
                 <div class="col-md-4">
-                    </div>    
+                    <p v-for="(result,i) in resultSemantico"><b>${(i+1)} - ${ result.codigo_err }</b> : ${ result.msg } - lexema: ${ result.lexema }, linea: ${ result.fila_err }</p><br>
+                </div>    
+            </div>
+        </div>
+        <div class="valores_sem">
+            <h1>TABLA IDENTIFICADORES </h1>
+            <table>
+                <thead>
+                    <th>IDENTIFICADOR</th>
+                    <th>LEXEMA</th>
+                    <th>FILA</th>
+                    <th>TIPO</th>
+                </thead>
+                <tbody>
+                    <tr v-for="(result,i) in resultLexemas">
+                        <td>${(i+1)} - ${ result.identificador }</td>
+                        <td>${ result.token }</td>
+                        <td>${ result.fila }</td>
+                        <td>${ result.tipo }</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="tablas">
+            <div class="exito_sem">
+                <h1>TABLA EXITO SEMANTICO</h1>
+                <table>
+                    <thead>
+                        <th>CODIGO</th>
+                        <th>MENSAJE</th>
+                        <th>LEXEMA</th>
+                        <th>FILA</th>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(result,i) in resultSemantico" v-show="!isError">
+                            <td>${(i+1)} - ${ result.codigo_exito }</td>
+                            <td>${ result.msg }</td>
+                            <td>${ result.lexema }</td>
+                            <td>${ result.filla_exito }</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="error_sem">
+                <table>
+                    <h1>TABLA ERRORES SEMANTICOS</h1>
+                    <thead>
+                        <th>CODIGO</th>
+                        <th>MENSAJE</th>
+                        <th>LEXEMA</th>
+                        <th>FILA</th>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(result,i) in resultSemantico" v-show="isError">
+                            <td>${(i+1)} - ${ result.codigo_err }</td>
+                            <td>${ result.msg }</td>
+                            <td>${ result.lexema }</td>
+                            <td>${ result.fila_err }</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
         <footer></footer>
