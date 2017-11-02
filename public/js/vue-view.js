@@ -38,7 +38,17 @@ new Vue({
             let texto = document.getElementById('textarea1').value;    
             axios.post('http://localhost:3000/analizar', { texto: texto }).then( res => {
                 console.log(res.data.resultado);   
-                console.log(res.data.sintac);   
+                console.log(res.data.sintac);
+                console.log(res.data.res_sem);
+                
+                if(res.data.resultado.erroresLexicos.length > 0){
+                    this.isError = true;
+                    this.resultLexico = res.data.resultado.erroresLexicos;
+                
+                }else{
+                    this.isError = false;
+                    this.resultLexico = res.data.resultado.tablaLexico;                               
+                }
             });
 
         }    

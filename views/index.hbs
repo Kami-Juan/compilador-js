@@ -18,32 +18,42 @@
         </header>
         <form>
             <div class="opciones">
-                <div class="_op-file">
+             <!--   <div class="_op-file">-->
                     <label for="file" id="_folder"><i class="fa fa-folder-open" aria-hidden="true"></i></label>
                     <input type="file" name="entrada" id="file" style="display: none">
-                    <label for="sub" id="run_file"><i class="fa fa-play-circle" aria-hidden="true"></i></label>
+                    <label for="sub" id="run_file"><i id="upload" class="fa fa-play-circle" aria-hidden="true"></i></label>
                     <input type="submit" id="sub" style="display: none" @click.prevent="onSubmit">
-                </div>
-                <div class="_op-textarea">
+                <!--</div>-->
+                <!--<div class="_op-textarea">-->
                     <label for="ex" id="run_file"><i class="fa fa-play-circle" aria-hidden="true"></i></label>
                     <input type="submit" id="ex" style="display: none" @click.prevent="onSubmitAnalisis">
-                </div>
+                <!--</div>-->
             </div>
             <div class="panel_codigo">
-                <div class="codigo_carga" >
+                <!--<div class="codigo_carga" >
                     <div v-for="(res, i) in fileEntry">
                         <div class="line"><span>${ i+1 }</span></div>
                          <p>${ res }</p><br>
                     </div> 
                    
-                </div>
+                </div> -->
                 <div class="codigo_write">
                     <textarea id="textarea1" name="analisis" v-model="datos" rows="20"></textarea>
                 </div>
             </div>
         </form>
         <div class="salida">
-            <div class="mensajes"></div>
+            <div class="mensajes">
+                <div class="col-md-4">
+                    <h1>Resultado Léxico</h1>
+                </div>
+                <div class="col-md-4">
+                    <h1>Resultado Sintáctico</h1>
+                </div>
+                <div class="col-md-4">
+                    <h1>Resultado Semántico</h1>
+                </div>
+            </div>
             <div class="good" v-if="!isError">
                 <div class="col-md-4">
                     <p v-for="result in resultLexico">${ result.identificador } : ${ result.token }</p>           
@@ -52,7 +62,14 @@
                 <div class="col-md-4"></div>
             </div>
             <div class="mad"  v-if="isError">
-                <p v-for="result in resultLexico">${ result.error }</p>
+                <div class="col-md-4">
+                    <p v-for="result in resultLexico"><b>Error en fila: </b>${ result.num_linea }<b>Token desconocido: </b>${ result.error }</p>
+                </div>
+                <div class="col-md-4">
+                   
+                </div>
+                <div class="col-md-4">
+                    </div>    
             </div>
         </div>
         <footer></footer>

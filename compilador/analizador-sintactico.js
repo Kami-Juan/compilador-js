@@ -43,8 +43,9 @@ const tabla_sintactica =
 
     let analizadorSintactico = ( lex, errores,fila ) => 
     {
+        
         var cont = 0;
-        var pila = ["PUNTOYCOMA","Z"];        
+        var pila = ["PUNTOYCOMA","Z"];   
         if( errores.length > 0 )
         {
             errores_sintacticos.push({
@@ -86,6 +87,56 @@ const tabla_sintactica =
                     }
                     else if( lex[0] == "IDENTIFICADOR" )
                     {
+                        if( pila[pila.length-1] == "Z" )
+                        {
+                            pila.pop();
+                            pila.push("S");
+                            if( pila[pila.length-1] == "S" )
+                            {
+                                pila.pop();
+                                pila.push("E");
+                                if( pila[pila.length-1] == "E" )
+                                {
+                                    pila.pop();
+                                    pila.push("e");
+                                    pila.push("A");
+                                    if( pila[pila.length-1] == "A" )
+                                    {
+                                        pila.pop();
+                                        pila.push("a");
+                                        pila.push("B");
+                                        if( pila[pila.length-1] == "B" )
+                                        {
+                                            pila.pop();
+                                            pila.push("b");
+                                            pila.push("C");
+                                            if( pila[pila.length-1] == "C" )
+                                            {
+                                                pila.pop();
+                                                pila.push("c");
+                                                pila.push("D");
+                                                if ( pila[pila.length-1] == "D" )
+                                                {
+                                                    pila.pop();
+                                                    pila.push("d");
+                                                    pila.push("F");
+                                                    if( pila[pila.length-1] == "F" )
+                                                    {
+                                                        pila.pop();
+                                                        pila.push("id");
+                                                        if ( pila[pila.length-1] == "id" )
+                                                        {
+                                                            pila.pop();
+                                                            lex.shift();
+                                                        }
+                                                    }
+                                                }
+                                            } 
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         if( pila[pila.length-1] == "E" )
                         {
                             pila.pop();

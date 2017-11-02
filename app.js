@@ -5,6 +5,7 @@ var multer = require('multer');
 var bodyParse = require('body-parser');
 const { analizarTokens,cleanTablas } = require('./compilador/analizador-lexico');
 const { analizadorSintactico, cleanTablaSintac } = require('./compilador/analizador-sintactico');
+const { analizadorSemantico, cleanTablaSemantico } = require('./compilador/analizador-semantico');
 
 var app = express();
 var port = 3000;
@@ -51,11 +52,17 @@ app.post('/upload', function (req, res) {
 app.post('/analizar', ( req, res ) => {
     let datosAnalisis = req.body.texto.split("\n");
     var resultado = analizarTokens(datosAnalisis);
-/*     res.send({ resultado }); */
     cleanTablas();
+    
+    let identificador = resultado.array_identificadores;
+
     var sintac = analizadorSintactico(resultado.array_identificadores, resultado.erroresLexicos);
-    res.send({ resultado, sintac });
     cleanTablaSintac();
+    
+    var res_sem = analizadorSemantico(resultado.tablaLexico, sintac.errores_sintacticos );
+    res.send({ resultado, sintac, res_sem });
+    cleanTablaSemantico();
+    
 });
 
 app.get('/', ( req, res ) => {
