@@ -27,6 +27,20 @@ let analizadorSemantico = ( array_lex, err_sintac  ) =>
         
         for (var x = 0; x < array_lex.length; x++)
         {
+            if (array_lex[x].identificador == "PALABRA_RESERVADA" && array_lex[x+1].identificador == "CONSTANTE") 
+            {
+                errores_semanticos.push({
+                    codigo_err: "ID_ERROR",
+                    msg: "EL IDENTIFICADOR NO PUEDE SER CONSTANTE",
+                    fila_err: array_lex[x + 1].fila,
+                    lexema: array_lex[x + 1].token,
+                    tipo: array_lex[x + 1].tipo
+                });
+            }
+        }
+
+        for (var x = 0; x < array_lex.length; x++)
+        {
             if (array_lex[x].identificador == "PALABRA_RESERVADA") 
             {
                 if (array_lex[x+1].identificador == "IDENTIFICADOR") 

@@ -22,6 +22,7 @@ new Vue({
                 return;
             }
 
+            /* https://compiladorjsitm.herokuapp.com/ */
             axios.post('https://compiladorjsitm.herokuapp.com/upload', data).then( res => {
                 console.log(res.data);
                 this.fileEntry =  res.data.datos;
@@ -40,6 +41,8 @@ new Vue({
                 }
             });
         },
+
+        /* https://compiladorjsitm.herokuapp.com/ */
         onSubmitAnalisis(){
             let texto = document.getElementById('textarea1').value;    
             axios.post('https://compiladorjsitm.herokuapp.com/analizar', { texto: texto }).then( res => {
