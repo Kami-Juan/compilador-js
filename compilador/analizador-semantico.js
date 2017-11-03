@@ -1,8 +1,10 @@
 const _ = require('underscore');
 
+/* Aqui se guardan los resultados */
 let errores_semanticos = [];
 let exito_semantico = [];
 
+/* Este método verifica la semántica del programa */
 let analizadorSemantico = ( array_lex, err_sintac  ) =>
 {
     if (err_sintac.length > 0 || (array_lex[0].identificador == "IDENTIFICADOR" && array_lex[1].identificador == "PUNTOYCOMA") || array_lex[0].identificador !== "PALABRA_RESERVADA")
@@ -12,7 +14,7 @@ let analizadorSemantico = ( array_lex, err_sintac  ) =>
         
     }else
     {
-
+        /* AGREGA EL VALOR A LAS CONSTANTES DEPENDIENDO DE SU TOKEN: ej -> 2.333 = float*/
         for( var x = 0; x < array_lex.length; x++ )
         {
             if( array_lex[x].identificador == "CONSTANTE" ){
@@ -25,6 +27,7 @@ let analizadorSemantico = ( array_lex, err_sintac  ) =>
             }
         }
         
+        /* MARCA ERROR SI ES UNA CONSTANTES DESPUES DE LA PALABRA RESERVADA */
         for (var x = 0; x < array_lex.length; x++)
         {
             if (array_lex[x].identificador == "PALABRA_RESERVADA" && array_lex[x+1].identificador == "CONSTANTE") 
@@ -39,6 +42,7 @@ let analizadorSemantico = ( array_lex, err_sintac  ) =>
             }
         }
 
+        /* INICIALIZA LAS VARIABLES DEPENDIENDO SI LA CONSTATES ES IGUAL AL TIPO DE LA PALABRA RESERVADA */
         for (var x = 0; x < array_lex.length; x++)
         {
             if (array_lex[x].identificador == "PALABRA_RESERVADA") 
@@ -49,7 +53,6 @@ let analizadorSemantico = ( array_lex, err_sintac  ) =>
                     {
                         if (array_lex[x].token !== array_lex[x + 3].tipo)
                         {
-                            //console.log("los tipos de variable son incompatibles " + array_lex[x + 1].token + " " + array_lex[x + 1].tipo);
                             errores_semanticos.push({
                                 codigo_err: "DATA_TYPE_ERROR",
                                 msg: "LOS TIPOS DE DATOS SON INCOMPATIBLES",
@@ -59,7 +62,6 @@ let analizadorSemantico = ( array_lex, err_sintac  ) =>
                             });
                         }else{
                             array_lex[x + 1].tipo = array_lex[x].token;                            
-                            //console.log("Esta inicializado: " + array_lex[x + 1].token + " " + array_lex[x + 1].tipo);
                             exito_semantico.push({
                                 codigo_exito: "INIT->SUCCESSFULL",
                                 msg: "LA VARIABLE SE INICIALIZO SATISFACTORIAMENTE",
@@ -73,16 +75,16 @@ let analizadorSemantico = ( array_lex, err_sintac  ) =>
             }   
         }
         
+        /* VERIFICA CUANDO SE ASIGNA UN VALOR A UNA VARIABLE YA INICIALZADA CONCUERDE CON EL TIPO DE DATO QUE SE GUARDÓ, SI NO TIENE UN VALOR Y NO EXISTE EN LOS VALORES DE ENTRADA SIGNIFICA QUE NO ESTA INICIALIZADA */
         for (var x = 0; x < array_lex.length; x++) 
         {
             if (array_lex[x].identificador == "IDENTIFICADOR") {
                 if (array_lex[x].tipo.length == 0) {
                     if(buscarSimbolo(array_lex[x], array_lex))
                     {
-                        //console.log("se cambió el valor:" + array_lex[x].token + " fila: " + array_lex[x].fila);
+                        
                     }else
                     {
-                        //console.log("no esta inicializado!!!: " + array_lex[x].token + " fila: " + array_lex[x].fila);
                         errores_semanticos.push({
                             codigo_err: "INIT->ERROR",
                             msg: "LA VARIABLE NO ESTA INICIALIZADA",
@@ -96,7 +98,7 @@ let analizadorSemantico = ( array_lex, err_sintac  ) =>
         }
         
                
-
+        /* CUANDO SE L ASIGNA UN NUEVO VALOR A UNA VARIABLE VERIFICA QUE EL NUEVO VALOR SEA IGUAL AL TIPO DE VALOR CON EL QUE SE GUARDÓ */
         for (var x = 0; x < array_lex.length; x++) 
         {
             
@@ -115,6 +117,7 @@ let analizadorSemantico = ( array_lex, err_sintac  ) =>
             }
         }    
         
+        /* VERIFICA QUE CUANDO SE ASIGNA CON VARIOS IDENTIFICADORES Y/O CONSTANTES, VERIFICA QUE CONCUERDEN CON EL TIPO DE VARIABLE QUE ESTÁN IGUALANDO */
         for (var x = 0; x < array_lex.length; x++) 
         {
             if (array_lex[x].identificador == "IDENTIFICADOR" && array_lex[x - 1].identificador != "PALABRA_RESERVADA") {
@@ -135,10 +138,12 @@ let analizadorSemantico = ( array_lex, err_sintac  ) =>
         }
     }
 
+    /* LIMPIA LA TABLA DE SIMBOLOS PARA QUE SOLO QUEDEN LOS QUE SE NECESITAN PARA LA SIGUINTE FASE */
     array_lex = array_lex.filter((e) => {
         return e.identificador != "OPERADOR" && e.identificador != "PUNTOYCOMA" && e.identificador != "IGUALACION"; 
     });
 
+    /* RETORNA LAS TABLAS */
     return {
         errores_semanticos,
         exito_semantico, 
@@ -147,12 +152,14 @@ let analizadorSemantico = ( array_lex, err_sintac  ) =>
     
 };
 
+/* LIMPIA LAS TABLAS DESPUES DE MOSTRAR LOS RESULTADOS */
 let cleanTablaSemantico = (  ) =>
 {
     errores_semanticos = [];
     exito_semantico = []; 
 }; 
 
+/* ESTE METODO BUSCA Y ASIGNA SU VALOR CORRESPONDIENTE */
 let buscarSimbolo = ( simbolo, lex ) => 
 {
     var si_existe = false;
@@ -166,6 +173,7 @@ let buscarSimbolo = ( simbolo, lex ) =>
     return si_existe;
 };
 
+/* VERIFICA QUE EL TIPO DE DATO SEA IGUAL QUE LOS DEMÁS */
 let realizarOperacion = ( simbolo, fila, lex ) =>
 {
     var contErrTipo = 0;
@@ -173,7 +181,7 @@ let realizarOperacion = ( simbolo, fila, lex ) =>
     {
         if ((lex[s].identificador == "IDENTIFICADOR" || lex[s].identificador == "CONSTANTE") && lex[s].fila == fila && lex[s].tipo == simbolo.tipo)
         {
-            //console.log(lex[s].token);
+
         } else if ((lex[s].identificador == "IDENTIFICADOR" || lex[s].identificador == "CONSTANTE" ) && lex[s].fila == fila && lex[s].tipo !== simbolo.tipo )
         {
             errores_semanticos.push({

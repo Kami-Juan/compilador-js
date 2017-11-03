@@ -1,6 +1,7 @@
 const _ = require('underscore');
 const { analizadorSintactico } = require('./analizador-sintactico');
 
+/* Esta expresion regular determina que lexemas acepta el programa */
 const componentesLexicos = /(int|float|[-]|[\+]|[\/]|[\*]|^[a-z]+$|[$][A-Za-z$_]+|[_][A-Za-z_]+|[A-Za-z_]+|[A-Za-z$]+|[_]|[$]|[\(]|[\)]|[\;]|[ ]|[=]|[\t]+|[\r]|[\d]+[\.]\d+|[0-9]+|[\.])/g;
 
 /* const operadores = /([-]|[\+]|[\/]|[\*])/g; */
@@ -11,33 +12,46 @@ const res = /([-])/g;
 const div = /([\/])/g;
 const mul = /([\*])/g;
 
+/* PARENTESIS */
 const llave_aper = /([\(])/g;
 const llave_cerr = /([\)])/g;
+
+/* IDENTIFICADORES */
 const identificadores = /(^[a-z]+$|[$][A-Za-z$_]+|[_][A-Za-z_]+|[A-Za-z_]+|[A-Za-z$]+[_]|[$])/g;
+
+/* CONSTANTES */
 const numeros = /([\d]+[\.]\d+|[0-9]+)/g;
 
 /* PALABRAS RESERVADAS */
 const word_reserv_float = /(float)/g;
 const word_reserv_int = /(int)/g;
-
 const palabrasReservadas = /(int|float)/g;
+
+/* PUNTOYCOMA */
 const puntoycoma = /([\;])/g;
+
+/* IGUALACION */
 const igualacion = /([=])/g;
+
+/* PUNTO */
 const punto = /[\.]/g
 
 
+/* Aquí se guardan los valores que cada método devuelve */
 let tablaLexico = [];
 let tablaPura = [];
 let array_identificadores = [];
 let erroresLexicos = [];
 let match_replace = [];
 
-
+/* Busca los lexemas que no concuerdan en las expresion regular que se formuló */
 let findErrores = ( linea, index_datos ) => {
 
     var errores = _.filter(linea, function (x) {
         return  x != x.match(componentesLexicos);
      });
+
+     /* Se guarda en un la tabla erroresLexico como un objeto que lo compone de que lexema es incorrecto y en qué linea*/
      errores.forEach(function(datos, index){
         if(!_.findKey(erroresLexicos, { datos: datos })){
             erroresLexicos.push({ error: datos, num_linea: index_datos+1 });                                
@@ -45,14 +59,18 @@ let findErrores = ( linea, index_datos ) => {
      });
 };
 
-
+/* Este método llena la tabla con los lexemas correctos en forma de objetos */
 let llenarTablaLexico = ( match,index ) => {
+
+    /* Este metodo borra todas las impuresas de los valores de entrada */
     var match0 = _.filter(match, function(z){
         return z !== null && z !== " "  && z !== "\r" && z !== _.isEmpty(z);
     });
 
+    /* Le quita los tabs a los valores de entrada */
     var match = _.without(match0, "\t");
 
+    /* Aqui verifica que sean igual a la expresion regular y lo llena a la tabla de simbolos */
     let replace_array_match = match.map(function(e){
                 switch (true) {
                     /* case e == e.match(operadores):
@@ -121,15 +139,20 @@ let llenarTablaLexico = ( match,index ) => {
                         break;    
                 }
     });
+
+    /* Se necesitó el uso de una tabla pivote para el sintactico, por lo que el resultado de todo se almacena en esa variable */
     match_replace =  replace_array_match;
 };
 
+/* Lee fila por fila los tokens y los envia a los metodos correspondientes*/
 let analizarTokens = ( entrada ) => {
     
     entrada.forEach(function(e, i) 
     {
+
         findErrores(e,i);
         llenarTablaLexico(e.match(componentesLexicos),i);
+        /* Se envía el atributo de llenarTabla para determinar si la sintaxis es correcta, mas la tabla de sus errores y la fila en la que esta leyyendo */
         analizadorSintactico(match_replace, erroresLexicos, i);
     }); 
     return {
@@ -142,6 +165,7 @@ let analizarTokens = ( entrada ) => {
 
 };
 
+/* Este metodo sirve para limpiar las tablas después de obtener la información que se necesitaba */
 let cleanTablas = () => {
     tablaLexico = [];
     erroresLexicos = [];

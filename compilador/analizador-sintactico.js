@@ -20,9 +20,11 @@ const _ = require("underscore");
 
 */
 
+/* Aqui se guardan los resultados */
 let errores_sintacticos = [];
 let exito_sintacticos = [];
 
+/* Esta tabla es de referencia sobre que camino debe ir la expresión dada por el lexico */
 const tabla_sintactica =
     [      /*  =    |-      |+      |*      |/     |id    |cte    |(     |)  |wr    |$ */
       /*Z*/["",     "",     "",     "",     "",    "S",   "",     "",    "", "RE",   ""  ],
@@ -48,13 +50,14 @@ const tabla_sintactica =
         var pila = ["PUNTOYCOMA","Z"];   
         if( errores.length > 0 )
         {
+            /* Si tiene errores el lexico, marca error */
             errores_sintacticos.push({
                 mensaje_error: `hay errores en el léxico, por favor repárelos primero: ${(fila+1)}`, 
                 fila_error: `${(fila+1)}`,
                 token_error: null
             });           
         }else
-        {   
+        {   /* Con este proceso se determina si la fila es válida o no */
             if( lex.length == 0)
             {
                pila.pop();
@@ -859,6 +862,7 @@ const tabla_sintactica =
         }
     };
     
+    /* Limpia las tablas una vez vistas la información */
     let cleanTablaSintac = () => {
         errores_sintacticos = [];
         exito_sintacticos = [];
