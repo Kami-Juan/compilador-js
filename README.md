@@ -1,5 +1,6 @@
 # compilador-js
-Es un compilador utilizando nodejs by Sheila Sugey Manzanero Martin and Juan de Dios Canche Cen
+Es un compilador utilizando nodejs by Sheila Sugey Manzanero Martin and Juan de Dios Canche Cen.
+Página del [compilador](https://compiladorjsitm.herokuapp.com/).
 
 ## Instalación
 
@@ -14,15 +15,18 @@ npm install -g nodemon
 git clone https://github.com/Kami-Juan/compilador-js.git
 ```
 ó dando click [aqui](https://github.com/Kami-Juan/compilador-js/archive/master.zip) mismo.
+
 5. Mediante el cmd entrar a la carpeta y escribir el comando:
 ```sh
 npm install
 ```
 y todas las dependencias que se necesitan se descargarán.
+
 6. Después, escribir en la misma carpeta el siguiente comando:
 
 ```sh
 npm run dev-start
 ```
 El programa por default tendrá la siguiente [dirección](http://localhost:3000).
+
 7. Testear y probar!.
