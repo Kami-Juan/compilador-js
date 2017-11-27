@@ -2,7 +2,7 @@ const _ = require('underscore');
 const { analizadorSintactico } = require('./analizador-sintactico');
 
 /* Esta expresion regular determina que lexemas acepta el programa */
-const componentesLexicos = /(int|float|[-]|[\+]|[\/]|[\*]|^[a-z]+$|[$][A-Za-z$_]+|[_][A-Za-z_]+|[A-Za-z_]+|[A-Za-z$]+|[_]|[$]|[\(]|[\)]|[\;]|[ ]|[=]|[\t]+|[\r]|[\d]+[\.]\d+|[0-9]+|[\.])/g;
+const componentesLexicos = /(int|float|[-]|[\+]|[\/]|[\*]|^[a-z]+$|[$][A-Za-z$_]+|[_][A-Za-z_]+|[A-Za-z_]+|[A-Za-z$]+|[_]|[$]|[\(]|[\)]|[\;]|[ ]|[=]|[\t]+|[\r]|[\d]+[\.]\d+|[0-9]+|[\.]|[>]|[<]|MAI|MNI|EQ|[\{]|[\}]|[\|]|[&])/g;
 
 /* const operadores = /([-]|[\+]|[\/]|[\*])/g; */
 
@@ -12,9 +12,25 @@ const res = /([-])/g;
 const div = /([\/])/g;
 const mul = /([\*])/g;
 
+/* BOOLEANOS */
+const mayor = /([>])/g;
+const menor = /([<])/g;
+const mayor_igual = /(MAI)/g;
+const menor_igual = /(MNI)/g;
+const igual_igual = /(EQ)/g;
+
+/* COMPARATIVOS */
+
+const or = /([\|])/g;
+const and = /([&])/g;
+
 /* PARENTESIS */
 const llave_aper = /([\(])/g;
 const llave_cerr = /([\)])/g;
+
+/*LLAVES */
+const llave_inicio = /([\{])/g;
+const llave_final = /([\}])/g;
 
 /* IDENTIFICADORES */
 const identificadores = /(^[a-z]+$|[$][A-Za-z$_]+|[_][A-Za-z_]+|[A-Za-z_]+|[A-Za-z$]+[_]|[$])/g;
@@ -25,7 +41,9 @@ const numeros = /([\d]+[\.]\d+|[0-9]+)/g;
 /* PALABRAS RESERVADAS */
 const word_reserv_float = /(float)/g;
 const word_reserv_int = /(int)/g;
-const palabrasReservadas = /(int|float)/g;
+const word_reserv_do = /(do)/g;
+const word_reserv_while = /(while)/g;
+const palabrasReservadas = /(int|float|do|while)/g;
 
 /* PUNTOYCOMA */
 const puntoycoma = /([\;])/g;
@@ -77,6 +95,21 @@ let llenarTablaLexico = ( match,index ) => {
                         tablaLexico.push({ identificador: "OPERADOR", token:e });
                         array_identificadores.push("OPERADOR");
                         break; */
+                    case e == e.match(or):
+                        tablaLexico.push({ identificador: "COMPARACION", token:e, fila: index+1 });
+                        array_identificadores.push("OR");
+                        return e = "OR";
+                        break;  
+                    case e == e.match(and):
+                        tablaLexico.push({ identificador: "COMPARACION", token:e, fila: index+1 });
+                        array_identificadores.push("AND");
+                        return e = "AND";
+                        break;  
+                    case e == e.match(igualacion):
+                        tablaLexico.push({ identificador: "IGUALACION", token:e, fila: index+1 });
+                        array_identificadores.push("IGUALACION");
+                        return e = "IGUALACION";
+                        break;       
                     case e == e.match(sum):
                         tablaLexico.push({ identificador: "OPERADOR", token:e, fila: index+1 });
                         array_identificadores.push("SUMA");
@@ -96,7 +129,33 @@ let llenarTablaLexico = ( match,index ) => {
                         tablaLexico.push({ identificador: "OPERADOR", token:e, fila: index+1 });
                         array_identificadores.push("DIVISION");
                         return e = "DIVISION";
-                        break;               
+                        break;
+                    
+                    case e == e.match(mayor_igual):
+                        tablaLexico.push({ identificador: "COMPARADOR", token:e, fila: index+1 });
+                        array_identificadores.push("MAYOR_IGUAL_QUE");
+                        return e = "MAYOR_IGUAL_QUE";
+                        break;
+                    case e == e.match(menor_igual):
+                        tablaLexico.push({ identificador: "COMPARADOR", token:e, fila: index+1 });
+                        array_identificadores.push("MENOR_IGUAL_QUE");
+                        return e = "MENOR_IGUAL_QUE";
+                        break;
+                        case e == e.match(mayor):
+                        tablaLexico.push({ identificador: "COMPARADOR", token:e, fila: index+1 });
+                        array_identificadores.push("MAYOR_QUE");
+                        return e = "MAYOR_QUE";
+                        break;
+                    case e == e.match(menor):
+                        tablaLexico.push({ identificador: "COMPARADOR", token:e, fila: index+1 });
+                        array_identificadores.push("MENOR_QUE");
+                        return e = "MENOR_QUE";
+                        break;    
+                    case e == e.match(igual_igual):
+                        tablaLexico.push({ identificador: "COMPARADOR", token:e, fila: index+1 });
+                        array_identificadores.push("COMPARAR");
+                        return e = "COMPARAR";
+                        break;                    
                     case e == e.match(llave_cerr):
                         tablaLexico.push({ identificador: "PARENTESIS_CERRAR", token:e, fila: index+1 });
                         array_identificadores.push("PARENTESIS_CERRAR");
@@ -107,6 +166,16 @@ let llenarTablaLexico = ( match,index ) => {
                         array_identificadores.push("PARENTESIS_APERTURA");
                         return e = "PARENTESIS_APERTURA";                        
                         break;      
+                    case e == e.match(llave_inicio):
+                        tablaLexico.push({ identificador: "LLAVE_APERTURA", token:e, fila: index+1 });
+                        array_identificadores.push("LLAVE_APERTURA");
+                        return e = "LLAVE_APERTURA";                        
+                        break; 
+                    case e == e.match(llave_final):
+                        tablaLexico.push({ identificador: "LLAVE_CERRAR", token:e, fila: index+1 });
+                        array_identificadores.push("LLAVE_CERRAR");
+                        return e = "LLAVE_CERRAR";                        
+                        break;     
                     case e == e.match(palabrasReservadas):
                         tablaLexico.push({ identificador: "PALABRA_RESERVADA", token:e, fila: index+1, tipo: e});
                         array_identificadores.push("PALABRA_RESERVADA");
@@ -126,12 +195,7 @@ let llenarTablaLexico = ( match,index ) => {
                         tablaLexico.push({ identificador: "PUNTOYCOMA", token:e, fila: index+1 });
                         array_identificadores.push("PUNTOYCOMA");
                         return e = "PUNTOYCOMA";                        
-                        break;
-                    case e == e.match(igualacion):
-                        tablaLexico.push({ identificador: "IGUALACION", token:e, fila: index+1 });
-                        array_identificadores.push("IGUALACION");
-                        return e = "IGUALACION";
-                        break;       
+                        break;    
                     case e == e.match(punto):
                         tablaLexico.push({ identificador: "PUNTO", token: e, fila: index+1 });
                         array_identificadores.push("PUNTO");                                                          

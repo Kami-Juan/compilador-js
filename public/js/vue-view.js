@@ -54,7 +54,7 @@ new Vue({
                 console.log(res.data.sintac);
                 console.log(res.data.res_sem);
                 
-                if (res.data.resultado.erroresLexicos.length > 0 || res.data.res_sem.errores_semanticos.length > 0 || res.data.sintac.errores_sintacticos.length > 0){
+                if (res.data.resultado.erroresLexicos.length > 0 || res.data.res_sem.errores_semanticos.length > 0 ){
                     this.isError = true;
                     this.resultLexico = res.data.resultado.erroresLexicos;
                     this.resultSemantico = res.data.res_sem.errores_semanticos;

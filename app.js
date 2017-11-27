@@ -8,6 +8,7 @@ var bodyParse = require('body-parser');
 const { analizarTokens,cleanTablas } = require('./compilador/analizador-lexico');
 const { analizadorSintactico, cleanTablaSintac } = require('./compilador/analizador-sintactico');
 const { analizadorSemantico, cleanTablaSemantico } = require('./compilador/analizador-semantico');
+const { generarCodigoIntermedio } = require('./compilador/codigo-intermedio');
 
 /* INICIALIZA EL SERVER */
 var app = express();
@@ -71,11 +72,13 @@ app.post('/analizar', ( req, res ) => {
     
     let identificador = resultado.array_identificadores;
 
-    var sintac = analizadorSintactico(resultado.array_identificadores, resultado.erroresLexicos);
-    cleanTablaSintac();
+    // var sintac = analizadorSintactico(resultado.array_identificadores, resultado.erroresLexicos);
+    // cleanTablaSintac();
     
-    var res_sem = analizadorSemantico(resultado.tablaLexico, sintac.errores_sintacticos );
-    res.send({ resultado, sintac, res_sem });
+    var res_sem = analizadorSemantico(resultado.tablaLexico, [] );
+
+    generarCodigoIntermedio( resultado.tablaLexico, res_sem.errores_semanticos );
+    res.send({ resultado, sintac: [], res_sem });
     cleanTablaSemantico();
     
 });
