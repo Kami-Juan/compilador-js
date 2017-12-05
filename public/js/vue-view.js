@@ -27,7 +27,7 @@ new Vue({
             /* http://compiladorjsitm.herokuapp.com/ 
                http://localhost:3000/
             */
-            axios.post('http://compiladorjsitm.herokuapp.com/upload', data).then( res => {
+            axios.post('https://compiladorjsitm.herokuapp.com/upload', data).then( res => {
                 console.log(res.data);
                 this.fileEntry =  res.data.datos;
                 this.datos = this.fileEntry.toString().replace(/\,/g,"");
@@ -69,7 +69,7 @@ new Vue({
         */
         onSubmitAnalisis(){
             let texto = document.getElementById('textarea1').value;    
-            axios.post('http://compiladorjsitm.herokuapp.com/analizar', { texto: texto }).then( res => {
+            axios.post('https://compiladorjsitm.herokuapp.com/analizar', { texto: texto }).then( res => {
                 //console.log(res.data.resultado);   
                 //console.log(res.data.sintac);
                 //console.log(res.data.res_sem);
