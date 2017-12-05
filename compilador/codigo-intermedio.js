@@ -1,6 +1,6 @@
 const _ = require('underscore');
-let { obtener_fin_exp, obtener_inicio_exp, obtener_lineas_codigo_do, obtener_pos_do, filas_do, obtener_final_do, set_post_do, obtener_inicio_exp_do, obtener_fin_exp_do, generarPostfijoDO } = require('./funciones-do/do');
-let { obtener_final_while, obtener_lineas_codigo_while, obtener_pos_while, filas_while, generarPostfijoWhile } = require('./funciones-while/while');
+let { obtener_fin_exp, obtener_inicio_exp, obtener_lineas_codigo_do, obtener_pos_do, filas_do, obtener_final_do, set_post_do, obtener_inicio_exp_do, obtener_fin_exp_do, generarPostfijoDO, generarTablasDo } = require('./funciones-do/do');
+let { obtener_final_while, obtener_lineas_codigo_while, obtener_pos_while, filas_while, generarPostfijoWhile, generarTablasWhile } = require('./funciones-while/while');
 
 let codigos_infijo = [];
 let codigos_posfijo = [];
@@ -15,22 +15,47 @@ let codigos_while_post = [];
 let lineas_codigo_do_pos_inicio = [];
 let lineas_codigo_do_pos_final = [];
 
+let lineas_codigo = [];
+
+let postfijo_do = [];
+let postfijo_while = [];
+
+let tablas_codigo_intermedio_do = [];
+let tablas_finales_code_intermedio_do = [];
+
+let tablas_codigo_intermedio_while = [];
 
 let generarCodigoIntermedio = ( tabla_lexico, errores_semanticos ) =>
-{
-    if( errores_semanticos.length > 0 )
-    {
-        console.log("Repare el semántico");
-    }else
-    {
-        let pos_do = obtener_pos_do( tabla_lexico );
-        let pos_while = obtener_pos_while( tabla_lexico );
+{   
+
+        //console.log(tabla_lexico);
+        let tabla_lex = _.clone(tabla_lexico);
+        
+        for( let y = 0; y < tabla_lex.length; y++ ){
+            if( (tabla_lex[y].token == "+" && tabla_lex[y+1].token == 0) || (tabla_lex[y].token == "-" && tabla_lex[y+1].token == 0)){
+                tabla_lex[y] = " ";
+                tabla_lex[y+1] = " ";
+            }
+        }
+
+        let tabla_lexico_optimizado = tabla_lex.filter( (e) => {
+            return e !== " ";
+        });
+
+        //console.log( tabla_lex );
+        
+
+        //console.log(tabla_lexico_optimizado);
+
+
+        let pos_do = obtener_pos_do( tabla_lexico_optimizado );
+        let pos_while = obtener_pos_while( tabla_lexico_optimizado );
        
         
         let pos_final_do = [];
         for( let x = 0; x < pos_do.length; x++ )
         {
-            pos_final_do.push(obtener_final_do( pos_do[x], tabla_lexico ));
+            pos_final_do.push(obtener_final_do( pos_do[x], tabla_lexico_optimizado ));
         }
 
         //console.log( `posiciones de inicio do: ${ pos_do }` );        
@@ -39,7 +64,7 @@ let generarCodigoIntermedio = ( tabla_lexico, errores_semanticos ) =>
         let pos_final_while = [];
         for( let z = 0; z < pos_while.length; z++ )
         {
-            pos_final_while.push(obtener_final_while( pos_while[z], tabla_lexico ));
+            pos_final_while.push(obtener_final_while( pos_while[z], tabla_lexico_optimizado ));
         }
 
         //console.log( `posiciones de inicio while: ${ pos_while }` );        
@@ -49,7 +74,7 @@ let generarCodigoIntermedio = ( tabla_lexico, errores_semanticos ) =>
 
         for( let y = 0; y < pos_do.length; y++ )
         {
-            codigos_do.push(obtener_lineas_codigo_do( pos_do[y], pos_final_do[y], tabla_lexico ));
+            codigos_do.push(obtener_lineas_codigo_do( pos_do[y], pos_final_do[y], tabla_lexico_optimizado ));
         }
 
         //console.log(`Filas de los do por do existentes: `);
@@ -57,7 +82,7 @@ let generarCodigoIntermedio = ( tabla_lexico, errores_semanticos ) =>
 
         for( let w = 0; w < pos_while.length; w++ )
         {
-            codigo_while.push( obtener_lineas_codigo_while( pos_while[w], pos_final_while[w], tabla_lexico ) );
+            codigo_while.push( obtener_lineas_codigo_while( pos_while[w], pos_final_while[w], tabla_lexico_optimizado ) );
         }
 
         //console.log(`Filas de los while por whiles existentes: `);
@@ -109,7 +134,6 @@ let generarCodigoIntermedio = ( tabla_lexico, errores_semanticos ) =>
 
         /*-------------------------------------------------------------*/
         //OBTIENE LAS LINEAS DE CODIGO DE LOS DO POR CADA DO EXISTENTE
-        let lineas_codigo = [];
 
         for( let f = 0; f < codigos_do_post.length; f++ )
         {
@@ -130,7 +154,6 @@ let generarCodigoIntermedio = ( tabla_lexico, errores_semanticos ) =>
         /*------------------------------------------------*/
         //OBTIENE LAS LINEAS DE CODIGO EN FORMATO POSTFIJO DO
 
-        let postfijo_do = [];
         for( let g = 0; g < lineas_codigo.length; g++ )
         {   
             let posfijo_lineas_do = [];
@@ -141,55 +164,58 @@ let generarCodigoIntermedio = ( tabla_lexico, errores_semanticos ) =>
             postfijo_do.push(posfijo_lineas_do);
         }
 
-        let postfijo_while = [];
         for( let g = 0; g < codigo_while.length; g++ )
         {   
             postfijo_while.push(generarPostfijoWhile( codigo_while[g] ));                
         }
 
-        //console.log(`CODIGOS POSFIJO`);
-        //console.log( postfijo_do[0] );
+        console.log(`CODIGOS POSFIJO`);
+        console.log( postfijo_do[0] );
         //console.log(`CODIGOS POSFIJO WHILE`);
         //console.log( postfijo_while );
 
         /* -------------------------------------- */
         //CREAR TABLAS:
 
-        let tablas_codigo_intermedio_do = [];
 
         for( let g = 0; g < postfijo_do.length; g++ )
         {   
             let tablas_codigo_intermedio_do_fila = [];        
             for (let j = 0; j < postfijo_do[g].length; j++)
             {
-                tablas_codigo_intermedio_do_fila.push(generarTablas( postfijo_do[g][j] ));
+                tablas_codigo_intermedio_do_fila.push(generarTablasDo( postfijo_do[g][j] ));
             }
             tablas_codigo_intermedio_do.push(tablas_codigo_intermedio_do_fila);
         }    
 
-        console.log( tablas_codigo_intermedio_do[2] );
-        
+        for( let x = 0; x < tablas_codigo_intermedio_do.length; x++ ){
+            let tablas_finales_do = [];                
+            for( let y = 0; y < tablas_codigo_intermedio_do[x].length; y++ ){
+                for( let z = 0; z < tablas_codigo_intermedio_do[x][y].length; z++ ){
+                    tablas_finales_do.push(tablas_codigo_intermedio_do[x][y][z]);
+                }
+            }
+            tablas_finales_code_intermedio_do.push(tablas_finales_do);
+        }
 
+        // console.log("TABLAS FINALES DO: ");
+        // console.log(tablas_finales_code_intermedio_do);
+        // console.log("-------------------");        
 
+        for( let r = 0; r <  postfijo_while.length; r++){
+            tablas_codigo_intermedio_while.push( generarTablasWhile( postfijo_while[r] , codigo_while[r].length) );
+        }
 
-        /*---------------------------------------*/
+        // console.log("TABLAS FINALES WHILE"); 
+        // console.log(tablas_codigo_intermedio_while);
+        // console.log("-------------------"); 
 
-        filas_do = [];
-        filas_while = [];
-        codigos_infijo = [];
-        codigos_posfijo = [];
-        codigos_do = [];
-        codigos_do_post = [];
-        lineas_codigo_do_pos_inicio = [];
-        lineas_codigo_do_pos_final = [];
-        lineas_codigo = [];
-        opstack = [];
-        resultado = [];
-        postfijo_do = [];
-        postfijo_while = [];
-        codigo_while = [];
-        tablas_codigo_intermedio = [];
-    }
+        tabla_lexico_optimizado = [];
+
+        return {
+            tablas_finales_code_intermedio_do,
+            tablas_codigo_intermedio_while
+        };
 };
 
 let setearJerarquia = ( simbolo ) =>{
@@ -227,90 +253,28 @@ let setearJerarquia = ( simbolo ) =>{
     }
 };
 
-let generarTablas = ( filas_do ) => {
-    let cadena_aux_uno = [];
-    let cadena_aux_dos = [];
-    let pos_break = 1;
-    let cont_iteracion = 0;
-    let tablas_codigo_intermedio = [];
 
-    // Seteo el primer valor a la cadena auxiliar uno:
-    cadena_aux_uno.push(filas_do[0]);
-
-    while( cadena_aux_uno.length > 0 ){
-        
-        for( let f = pos_break; f < filas_do.length; f++ ){   
-            cadena_aux_uno.push(filas_do[f]);            
-            
-            if( filas_do[f].identificador == "OPERADOR" || filas_do[f].identificador == "IGUALACION" ){
-                pos_break = f+1;
-                if( cont_iteracion == 0 ){
-                    cadena_aux_dos[0] = cadena_aux_uno[cadena_aux_uno.length-1];
-                    cadena_aux_dos[1] = cadena_aux_uno[cadena_aux_uno.length-2];
-                    cadena_aux_dos[2] = cadena_aux_uno[cadena_aux_uno.length-3];
-                    tablas_codigo_intermedio.push({
-                        data_objeto: "T1",
-                        dato_fuente: cadena_aux_dos[2].token,
-                        operacion: "="
-                    });
-                    tablas_codigo_intermedio.push({
-                        data_objeto: "T1",
-                        dato_fuente: cadena_aux_dos[1].token,
-                        operacion: cadena_aux_dos[0].token
-                    });
-
-                    cadena_aux_uno.pop();
-                    cadena_aux_uno.pop();
-                    cadena_aux_uno.pop();
-                    cadena_aux_uno.push({
-                        token: "T1",
-                        identificador: "REGISTRO_TEMPORAL"
-                    });
-                    
-                    cadena_aux_dos = [];
-                }else{
-                    cadena_aux_dos[0] = cadena_aux_uno[cadena_aux_uno.length-1];
-                    cadena_aux_dos[1] = cadena_aux_uno[cadena_aux_uno.length-2];
-                    cadena_aux_dos[2] = cadena_aux_uno[cadena_aux_uno.length-3];
-
-                    tablas_codigo_intermedio.push({
-                        data_objeto: cadena_aux_dos[2].token,
-                        dato_fuente: cadena_aux_dos[1].token,
-                        operacion: cadena_aux_dos[0].token
-                    });
-                    
-                    cadena_aux_uno.pop();
-                    cadena_aux_uno.pop();
-                    cadena_aux_uno.pop();
-
-                    //console.log("**");
-                    //console.log(tablas_codigo_intermedio);
-                    //console.log("**");
-
-                    console.log(`tamaño cadena aux 1 : ${ cadena_aux_uno.length }`);
-
-                    if( cadena_aux_uno.length > 0 ){
-                        cadena_aux_uno.push({
-                            token: "T1",
-                            identificador: "REGISTRO_TEMPORAL" 
-                        });
-                        cadena_aux_dos = [];                    
-                    }else{
-                        break;
-                    }
-                }
-
-                break;
-            }
-            
-        }
-        cont_iteracion++;        
-    }
-
-    return tablas_codigo_intermedio;
-
+let limpiarTablasCodigoIntermedio = () =>{
+    tablas_finales_code_intermedio_do = [];
+    tablas_codigo_intermedio_do= [];
+    codigos_infijo = [];
+    codigos_posfijo = [];
+    codigos_do = [];
+    codigos_do_post = [];
+    lineas_codigo_do_pos_inicio = [];
+    lineas_codigo_do_pos_final = [];
+    lineas_codigo = [];
+    opstack = [];
+    resultado = [];
+    postfijo_do = [];
+    postfijo_while = [];
+    codigo_while = [];
+    tablas_codigo_intermedio = [];
+    tablas_codigo_intermedio_while = [];
+    
 };
 
 module.exports = {
-    generarCodigoIntermedio
+    generarCodigoIntermedio,
+    limpiarTablasCodigoIntermedio
 };
