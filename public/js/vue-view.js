@@ -2,7 +2,7 @@ new Vue({
     el: "#app",
     data: {
         isError: false,
-        
+
         time: moment().format('LTS'),
         date: moment().format('l'),
         resultLexico: '',
@@ -24,7 +24,7 @@ new Vue({
                 return;
             }
 
-            /* http://compiladorjsitm.herokuapp.com/ 
+            /* http://compiladorjsitm.herokuapp.com/
                https://compiladorjsitm.herokuapp.com
                http://localhost:3000/
             */
@@ -45,7 +45,7 @@ new Vue({
                         $('.titulo_tab_').remove();
                         this.imprimircodigointermedio(this.result_tablas_codigo_intermedio);
                     }else{
-                        this.imprimircodigointermedio(this.result_tablas_codigo_intermedio);                     
+                        this.imprimircodigointermedio(this.result_tablas_codigo_intermedio);
                     }
                 } else {
                     this.isError = false;
@@ -59,19 +59,19 @@ new Vue({
                         $('.titulo_tab_').remove();
                         this.imprimircodigointermedio(this.result_tablas_codigo_intermedio);
                     }else{
-                        this.imprimircodigointermedio(this.result_tablas_codigo_intermedio);                     
+                        this.imprimircodigointermedio(this.result_tablas_codigo_intermedio);
                     }
                 }
             });
         },
 
-        /* https://compiladorjsitm.herokuapp.com/ 
-           http://localhost:3000/ 
+        /* https://compiladorjsitm.herokuapp.com/
+           http://localhost:3000/
         */
         onSubmitAnalisis(){
-            let texto = document.getElementById('textarea1').value;    
-            axios.post('https://compiladorjsitm.herokuapp.com//analizar', { texto: texto }).then( res => {
-                //console.log(res.data.resultado);   
+            let texto = document.getElementById('textarea1').value;
+            axios.post('https://compiladorjsitm.herokuapp.com/analizar', { texto: texto }).then( res => {
+                //console.log(res.data.resultado);
                 //console.log(res.data.sintac);
                 //console.log(res.data.res_sem);
                 //console.log( res.data.codigo_intermedio );
@@ -87,8 +87,8 @@ new Vue({
                         $('.titulo_tab_').remove();
                         this.imprimircodigointermedio(this.result_tablas_codigo_intermedio);
                     }else{
-                        this.imprimircodigointermedio(this.result_tablas_codigo_intermedio);                     
-                    }           
+                        this.imprimircodigointermedio(this.result_tablas_codigo_intermedio);
+                    }
                 }else{
                     this.isError = false;
                     this.resultLexico = res.data.resultado.tablaLexico;
@@ -101,7 +101,7 @@ new Vue({
                         $('.titulo_tab_').remove();
                         this.imprimircodigointermedio(this.result_tablas_codigo_intermedio);
                     }else{
-                        this.imprimircodigointermedio(this.result_tablas_codigo_intermedio);                     
+                        this.imprimircodigointermedio(this.result_tablas_codigo_intermedio);
                     }
                 }
             });
@@ -116,7 +116,7 @@ new Vue({
                     $('#'+(i+1)).append('<tr><th>'+(index+1)+'</th><th>'+a.data_objeto+'</th><th>'+a.dato_fuente+'</th><th>'+a.operacion+'</th></tr>');
                 });
             });
-            
+
             codigos.tablas_finales_code_intermedio_do.forEach( (e,i) => {
                 console.log(i);
                 contador_filas.push(document.getElementById((i+1)).rows.length+1);
@@ -129,7 +129,7 @@ new Vue({
                 });
             });
 
-        }    
+        }
     },
     mounted: function() {
         setInterval(()=>{
