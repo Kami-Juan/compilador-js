@@ -80,12 +80,6 @@ let findErrores = ( linea, index_datos ) => {
 /* Este método llena la tabla con los lexemas correctos en forma de objetos */
 let llenarTablaLexico = ( match,index ) => {
 
-    // for( let z = 0; z < match.length; z++ ){
-    //     if( (match[z] == "+" && match[z+1] == 0) ||  (match[z] == "-" && match[z+1] == 0) ){
-    //          match[z] = " ";
-    //          match[z+1] = " ";
-    //      }
-    // }
 
     /* Este metodo borra todas las impuresas de los valores de entrada */
     var match0 = _.filter(match, function(z){

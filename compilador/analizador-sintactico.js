@@ -63,7 +63,7 @@ const tabla_sintactica =
                pila.pop();
                pila.pop();
             }
-            else if( ( lex[0] == "PALABRA_RESERVADA" || lex[0] == "IDENTIFICADOR" ) && lex[lex.length-1] == "PUNTOYCOMA")
+            else if( ( lex[0] == "PALABRA_RESERVADA" || lex[0] == "IDENTIFICADOR" || lex[0] == "LLAVE_CERRAR" ))
             {
                 /* console.log(lex); */
                 while( pila.length !== 0 && lex.length !== 0)

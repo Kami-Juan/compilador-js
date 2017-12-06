@@ -177,6 +177,16 @@ let buscarSimbolo = ( simbolo, lex ) =>
 let realizarOperacion = ( simbolo, fila, lex ) =>
 {
     var contErrTipo = 0;
+    var contadorError = 0;
+    
+    errores_semanticos.forEach(e => {
+        if( e.codigo_err == "INIT->ERROR" &&( simbolo.token == e.lexema ) ){
+            contadorError++;
+        }
+    });
+
+    console.log(contadorError);
+
     for (var s = 0; s < lex.length; s++) 
     {
         if ((lex[s].identificador == "IDENTIFICADOR" || lex[s].identificador == "CONSTANTE") && lex[s].fila == fila && lex[s].tipo == simbolo.tipo)
@@ -184,14 +194,16 @@ let realizarOperacion = ( simbolo, fila, lex ) =>
 
         } else if ((lex[s].identificador == "IDENTIFICADOR" || lex[s].identificador == "CONSTANTE" ) && lex[s].fila == fila && lex[s].tipo !== simbolo.tipo )
         {
-            errores_semanticos.push({
-                codigo_err: "OP_TYPE->ERROR",
-                msg: "EL TIPO DE DATO ES INCOMPATIBLE CON LA OPERACION",
-                fila_err: lex[s].fila,
-                lexema: lex[s].token,
-                tipo: lex[s].tipo
-            });
-            contErrTipo++;
+            if( contadorError <= 0 && lex[s].tipo != ""){
+                errores_semanticos.push({
+                    codigo_err: "OP_TYPE->ERROR",
+                    msg: "EL TIPO DE DATO ES INCOMPATIBLE CON LA OPERACION",
+                    fila_err: lex[s].fila,
+                    lexema: lex[s].token,
+                    tipo: lex[s].tipo
+                });
+                contErrTipo++;
+            }
         }
     }
 

@@ -80,6 +80,9 @@ app.post('/analizar', ( req, res ) => {
     var resultado = analizarTokens(datosAnalisis);
     cleanTablas();
     
+    //  var sintac = analizadorSintactico( resultado.tablaLexico, resultado.erroresLexicos);
+    // cleanTablaSintac();
+
     let identificador = resultado.array_identificadores;
     
     var res_sem = analizadorSemantico(resultado.tablaLexico, [] );
